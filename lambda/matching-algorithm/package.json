@@ -1,0 +1,15 @@
+{
+  "name": "stepbuddy-matching-algorithm",
+  "version": "1.0.0",
+  "description": "StepBuddy matching algorithm Lambda function",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.400.0",
+    "@aws-sdk/lib-dynamodb": "^3.400.0"
+  },
+  "author": "",
+  "license": "MIT"
+}

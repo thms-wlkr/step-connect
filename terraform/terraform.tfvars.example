@@ -1,0 +1,32 @@
+# Copy this file to terraform.tfvars and fill in your values
+# DO NOT commit terraform.tfvars to version control
+
+aws_region  = "us-east-1"
+environment = "prod"
+project_name = "stepbuddy"
+
+# Google OAuth credentials from Google Cloud Console
+google_client_id     = "your-google-client-id"
+google_client_secret = "your-google-client-secret"
+
+# Update these URLs with your actual domain
+cognito_callback_urls = [
+  "http://localhost:8080",
+  "https://yourdomain.com",
+  "https://yourdomain.lovable.app"
+]
+
+cognito_logout_urls = [
+  "http://localhost:8080",
+  "https://yourdomain.com",
+  "https://yourdomain.lovable.app"
+]
+
+allowed_origins = [
+  "http://localhost:8080",
+  "https://yourdomain.com",
+  "https://yourdomain.lovable.app"
+]
+
+enable_waf   = true
+enable_xray  = true

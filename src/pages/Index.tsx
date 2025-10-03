@@ -1,12 +1,13 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { UserProfile } from "@/types";
 import { SwipeCard } from "@/components/SwipeCard";
 import { MatchModal } from "@/components/MatchModal";
+import { ProfileDetailModal } from "@/components/ProfileDetailModal";
 import { Navigation } from "@/components/Navigation";
 import { ChatView } from "@/components/ChatView";
 import { ProfileView } from "@/components/ProfileView";
 import { Button } from "@/components/ui/button";
-import { X, Heart } from "lucide-react";
+import { X, Footprints } from "lucide-react";
 import heroBackground from "@/assets/hero-background.jpg";
 import profile1 from "@/assets/profile-1.jpg";
 import profile2 from "@/assets/profile-2.jpg";
@@ -70,9 +71,22 @@ const Index = () => {
   const [activeView, setActiveView] = useState("discover");
   const [chatProfile, setChatProfile] = useState<UserProfile | null>(null);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
+  const [footsteps, setFootsteps] = useState<Array<{ id: number; x: number; y: number; direction: 'left' | 'right' }>>([]);
+  const [detailProfile, setDetailProfile] = useState<UserProfile | null>(null);
 
   const handleSwipe = (direction: 'left' | 'right') => {
     setSwipeDirection(direction);
+    
+    // Create footstep trail
+    const newFootsteps = Array.from({ length: 5 }, (_, i) => ({
+      id: Date.now() + i,
+      x: direction === 'right' ? 20 + (i * 15) : 80 - (i * 15),
+      y: 50 + (Math.random() * 10 - 5),
+      direction
+    }));
+    setFootsteps(newFootsteps);
+    
+    setTimeout(() => setFootsteps([]), 800);
     
     setTimeout(() => {
       if (direction === 'right') {
@@ -109,8 +123,8 @@ const Index = () => {
 
   if (activeView === "matches") {
     return (
-      <div className="min-h-screen bg-background pb-20 px-4 pt-8">
-        <h1 className="text-3xl font-bold mb-6">Your Matches</h1>
+      <div className="min-h-screen bg-[#141414] pb-20 px-4 pt-8">
+        <h1 className="text-3xl font-bold mb-6 text-[#ccff00]">Your Buddies</h1>
         <div className="grid grid-cols-2 gap-4">
           {mockProfiles.slice(0, 2).map((profile) => (
             <div 
@@ -119,7 +133,7 @@ const Index = () => {
                 setChatProfile(profile);
                 setActiveView("messages");
               }}
-              className="bg-card rounded-xl overflow-hidden shadow-card cursor-pointer hover:shadow-elevated transition-shadow"
+              className="bg-[#1a1a1a] rounded-xl overflow-hidden shadow-card cursor-pointer hover:shadow-elevated transition-shadow"
             >
               <img 
                 src={profile.photoUrl} 
@@ -139,67 +153,88 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div 
-        className="relative h-32 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroBackground})` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent" />
-        <div className="relative h-full flex items-center justify-center">
-          <h1 className="text-3xl font-bold text-white">StepBuddy</h1>
-        </div>
+    <div className="h-screen bg-[#141414] overflow-hidden flex flex-col">
+      {/* Logo Header - Compact */}
+      <div className="flex items-center py-3 px-4 bg-[#141414] z-10">
+        <img src="/logo.png" alt="walkr" className="h-6 mr-2" onError={(e) => {
+          e.currentTarget.style.display = 'none';
+        }} />
+        <h1 className="text-lg font-bold text-[#ccff00]">walkr</h1>
       </div>
 
-      {/* Swipe Cards */}
-      <div className="max-w-md mx-auto px-4 py-8 pb-24">
-        <div className="relative h-[600px]">
-          {mockProfiles.map((profile, index) => {
-            if (index < currentIndex || index > currentIndex + 1) return null;
-            
-            const isTop = index === currentIndex;
-            const offset = (index - currentIndex) * 10;
-            const scale = 1 - (index - currentIndex) * 0.05;
-            
-            return (
-              <SwipeCard 
-                key={profile.id}
-                profile={profile}
+      {/* Swipe Cards - Full Width */}
+      <div className="flex-1 relative">
+        <div className="absolute inset-0 px-3">
+          <div className="relative w-full h-full">
+            {/* Footstep Animation */}
+            {footsteps.map((step, idx) => (
+              <div
+                key={step.id}
+                className="absolute pointer-events-none animate-fade-out"
                 style={{
-                  transform: `translateY(${offset}px) scale(${scale}) ${
-                    swipeDirection && isTop 
-                      ? swipeDirection === 'left' 
-                        ? 'translateX(-150%) rotate(-20deg)' 
-                        : 'translateX(150%) rotate(20deg)'
-                      : ''
-                  }`,
-                  transition: swipeDirection && isTop ? 'transform 0.3s ease-out' : 'transform 0.3s ease-in-out',
-                  zIndex: mockProfiles.length - index,
-                  opacity: isTop ? 1 : 0.5,
+                  left: `${step.x}%`,
+                  top: `${step.y}%`,
+                  animationDelay: `${idx * 50}ms`,
+                  opacity: 0
                 }}
-              />
-            );
-          })}
-        </div>
-
-        {/* Swipe Buttons */}
-        <div className="flex justify-center gap-6 mt-8">
-          <Button
-            variant="swipe"
-            size="swipe"
-            onClick={() => handleSwipe('left')}
-            className="bg-card border-2 border-muted hover:border-destructive group"
-          >
-            <X className="w-8 h-8 text-muted-foreground group-hover:text-destructive" />
-          </Button>
-          <Button
-            variant="swipe"
-            size="swipe"
-            onClick={() => handleSwipe('right')}
-            className="bg-primary hover:bg-primary/90"
-          >
-            <Heart className="w-8 h-8 text-primary-foreground" />
-          </Button>
+              >
+                {step.direction === 'right' ? (
+                  <Footprints className="w-6 h-6 text-[#ccff00]" />
+                ) : (
+                  <X className="w-6 h-6 text-gray-400" />
+                )}
+              </div>
+            ))}
+            {mockProfiles.map((profile, index) => {
+              if (index < currentIndex || index > currentIndex + 1) return null;
+              
+              const isTop = index === currentIndex;
+              const offset = (index - currentIndex) * 10;
+              const scale = 1 - (index - currentIndex) * 0.05;
+              
+              return (
+                <SwipeCard 
+                  key={profile.id}
+                  profile={profile}
+                  onClick={() => isTop && setDetailProfile(profile)}
+                  onSwipeLeft={() => isTop && handleSwipe('left')}
+                  onSwipeRight={() => isTop && handleSwipe('right')}
+                  style={{
+                    transform: `translateY(${offset}px) scale(${scale}) ${
+                      swipeDirection && isTop 
+                        ? swipeDirection === 'left' 
+                          ? 'translateX(-150%) rotate(-20deg)' 
+                          : 'translateX(150%) rotate(20deg)'
+                        : ''
+                    }`,
+                    transition: swipeDirection && isTop ? 'transform 0.3s ease-out' : 'transform 0.3s ease-in-out',
+                    zIndex: mockProfiles.length - index,
+                    opacity: isTop ? 1 : 0.5,
+                  }}
+                />
+              );
+            })}
+            
+            {/* Swipe Buttons - Overlaying Card */}
+            <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-6 z-20">
+              <Button
+                variant="swipe"
+                size="swipe"
+                onClick={() => handleSwipe('left')}
+                className="bg-[#141414]/90 backdrop-blur-sm border-2 border-gray-600 hover:border-red-500 shadow-elevated"
+              >
+                <X className="w-8 h-8 text-gray-400" />
+              </Button>
+              <Button
+                variant="swipe"
+                size="swipe"
+                onClick={() => handleSwipe('right')}
+                className="bg-[#ccff00]/90 backdrop-blur-sm hover:bg-[#ccff00] shadow-elevated"
+              >
+                <Footprints className="w-8 h-8 text-[#141414]" />
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -210,7 +245,16 @@ const Index = () => {
         onMessage={handleMessage}
       />
 
-      <Navigation activeView={activeView} onViewChange={setActiveView} />
+      <ProfileDetailModal
+        isOpen={!!detailProfile}
+        onClose={() => setDetailProfile(null)}
+        profile={detailProfile}
+      />
+
+      {/* Navigation - Fixed Bottom */}
+      <div className="z-30">
+        <Navigation activeView={activeView} onViewChange={setActiveView} />
+      </div>
     </div>
   );
 };

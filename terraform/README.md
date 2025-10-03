@@ -1,6 +1,6 @@
-# StepBuddy AWS Infrastructure
+# walkr AWS Infrastructure
 
-This directory contains Terraform configurations to deploy the StepBuddy backend infrastructure on AWS.
+This directory contains Terraform configurations to deploy the walkr backend infrastructure on AWS.
 
 ## Architecture Overview
 

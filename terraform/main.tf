@@ -21,7 +21,39 @@ provider "aws" {
   
   default_tags {
     tags = {
-      Project     = "StepBuddy"
+      Project     = "gowalkr"
+      Environment = var.environment
+      ManagedBy   = "Terraform"
+    }
+  }
+}
+
+# CloudFront requires certificates in us-east-1
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+  
+  default_tags {
+    tags = {
+      Project     = "gowalkr"
+      Environment = var.environment
+      ManagedBy   = "Terraform"
+    }
+  }
+}
+
+# Cross-account provider for Route 53 in management account
+provider "aws" {
+  alias  = "management"
+  region = var.aws_region
+  
+  assume_role {
+    role_arn = var.route53_role_arn
+  }
+  
+  default_tags {
+    tags = {
+      Project     = "gowalkr"
       Environment = var.environment
       ManagedBy   = "Terraform"
     }
@@ -30,7 +62,7 @@ provider "aws" {
 
 # DynamoDB Tables
 resource "aws_dynamodb_table" "users" {
-  name           = "${var.project_name}-users-${var.environment}"
+  name           = "${var.project_name}-users"
   billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "id"
   
@@ -60,7 +92,7 @@ resource "aws_dynamodb_table" "users" {
 }
 
 resource "aws_dynamodb_table" "profiles" {
-  name           = "${var.project_name}-profiles-${var.environment}"
+  name           = "${var.project_name}-profiles"
   billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "userId"
   
@@ -90,7 +122,7 @@ resource "aws_dynamodb_table" "profiles" {
 }
 
 resource "aws_dynamodb_table" "matches" {
-  name           = "${var.project_name}-matches-${var.environment}"
+  name           = "${var.project_name}-matches"
   billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "id"
   range_key      = "matchedAt"
@@ -139,7 +171,7 @@ resource "aws_dynamodb_table" "matches" {
 }
 
 resource "aws_dynamodb_table" "messages" {
-  name           = "${var.project_name}-messages-${var.environment}"
+  name           = "${var.project_name}-messages"
   billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "conversationId"
   range_key      = "timestamp"
@@ -179,7 +211,7 @@ resource "aws_dynamodb_table" "messages" {
 }
 
 resource "aws_dynamodb_table" "swipes" {
-  name           = "${var.project_name}-swipes-${var.environment}"
+  name           = "${var.project_name}-swipes"
   billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "userId"
   range_key      = "targetUserId"
@@ -205,7 +237,7 @@ resource "aws_dynamodb_table" "swipes" {
 
 # Cognito User Pool
 resource "aws_cognito_user_pool" "main" {
-  name = "${var.project_name}-user-pool-${var.environment}"
+  name = "${var.project_name}-user-pool"
   
   username_attributes      = ["email"]
   auto_verified_attributes = ["email"]
@@ -247,12 +279,12 @@ resource "aws_cognito_user_pool" "main" {
   }
   
   tags = {
-    Name = "StepBuddy User Pool"
+    Name = "walkr User Pool"
   }
 }
 
 resource "aws_cognito_user_pool_client" "web" {
-  name         = "${var.project_name}-web-client-${var.environment}"
+  name         = "${var.project_name}-web-client"
   user_pool_id = aws_cognito_user_pool.main.id
   
   generate_secret                      = false
@@ -303,7 +335,7 @@ resource "aws_cognito_identity_provider" "google" {
 
 # S3 Buckets
 resource "aws_s3_bucket" "profile_photos" {
-  bucket = "${var.project_name}-profile-photos-${var.environment}"
+  bucket = "${var.project_name}-profile-photos"
   
   tags = {
     Name = "Profile Photos"
@@ -404,8 +436,8 @@ resource "aws_cloudfront_origin_access_control" "profile_photos" {
 
 # API Gateway REST API
 resource "aws_api_gateway_rest_api" "main" {
-  name        = "${var.project_name}-api-${var.environment}"
-  description = "StepBuddy REST API"
+  name        = "${var.project_name}-api"
+  description = "walkr REST API"
   
   endpoint_configuration {
     types = ["REGIONAL"]
@@ -414,18 +446,18 @@ resource "aws_api_gateway_rest_api" "main" {
 
 # API Gateway WebSocket API for real-time chat
 resource "aws_apigatewayv2_api" "websocket" {
-  name                       = "${var.project_name}-websocket-${var.environment}"
+  name                       = "${var.project_name}-websocket"
   protocol_type              = "WEBSOCKET"
   route_selection_expression = "$request.body.action"
   
   tags = {
-    Name = "StepBuddy WebSocket API"
+    Name = "walkr WebSocket API"
   }
 }
 
 # Lambda Execution Role
 resource "aws_iam_role" "lambda_execution" {
-  name = "${var.project_name}-lambda-execution-${var.environment}"
+  name = "${var.project_name}-lambda-execution"
   
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -447,7 +479,7 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
 }
 
 resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
-  name = "${var.project_name}-lambda-dynamodb-${var.environment}"
+  name = "${var.project_name}-lambda-dynamodb"
   role = aws_iam_role.lambda_execution.id
   
   policy = jsonencode({
@@ -490,15 +522,15 @@ resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
 
 # CloudWatch Log Groups for Lambda
 resource "aws_cloudwatch_log_group" "lambda_logs" {
-  name              = "/aws/lambda/${var.project_name}-${var.environment}"
+  name              = "/aws/lambda/${var.project_name}"
   retention_in_days = 14
 }
 
 # Example Lambda Functions (you'll need to add the actual code)
 # User Management Lambda
 resource "aws_lambda_function" "user_management" {
-  filename      = "lambda/user-management.zip"  # You'll need to create this
-  function_name = "${var.project_name}-user-management-${var.environment}"
+  filename      = "lambda/user-management.zip"
+  function_name = "${var.project_name}-user-management"
   role          = aws_iam_role.lambda_execution.arn
   handler       = "index.handler"
   runtime       = "nodejs20.x"
@@ -519,7 +551,7 @@ resource "aws_lambda_function" "user_management" {
 # Matching Algorithm Lambda
 resource "aws_lambda_function" "matching_algorithm" {
   filename      = "lambda/matching-algorithm.zip"
-  function_name = "${var.project_name}-matching-${var.environment}"
+  function_name = "${var.project_name}-matching"
   role          = aws_iam_role.lambda_execution.arn
   handler       = "index.handler"
   runtime       = "nodejs20.x"
@@ -541,7 +573,7 @@ resource "aws_lambda_function" "matching_algorithm" {
 # Chat Handler Lambda
 resource "aws_lambda_function" "chat_handler" {
   filename      = "lambda/chat-handler.zip"
-  function_name = "${var.project_name}-chat-${var.environment}"
+  function_name = "${var.project_name}-chat"
   role          = aws_iam_role.lambda_execution.arn
   handler       = "index.handler"
   runtime       = "nodejs20.x"
@@ -560,7 +592,7 @@ resource "aws_lambda_function" "chat_handler" {
 
 # SNS Topic for notifications
 resource "aws_sns_topic" "notifications" {
-  name = "${var.project_name}-notifications-${var.environment}"
+  name = "${var.project_name}-notifications"
   
   tags = {
     Name = "User Notifications"
@@ -569,7 +601,7 @@ resource "aws_sns_topic" "notifications" {
 
 # SQS Queue for async processing
 resource "aws_sqs_queue" "async_tasks" {
-  name                       = "${var.project_name}-async-tasks-${var.environment}"
+  name                       = "${var.project_name}-async-tasks"
   visibility_timeout_seconds = 300
   message_retention_seconds  = 1209600
   

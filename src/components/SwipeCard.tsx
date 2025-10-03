@@ -30,7 +30,7 @@ export const SwipeCard = ({ profile, style }: SwipeCardProps) => {
           <div className="flex items-center gap-2 text-white/90">
             {profile.age && <span>{profile.age}</span>}
             <MapPin className="w-4 h-4" />
-            <span className="text-sm">{profile.location}</span>
+            <span className="text-sm">Nearby</span>
           </div>
         </div>
       </div>

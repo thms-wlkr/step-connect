@@ -22,3 +22,23 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Capacitor
+ios/App/Pods
+ios/App/App/public
+ios/App/App/capacitor.config.json
+android/app/src/main/assets/public
+android/app/src/main/res/values/capacitor.config.json
+
+# iOS
+*.xcuserstate
+*.xcworkspace
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+.build/
+Pods/

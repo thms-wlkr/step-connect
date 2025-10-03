@@ -1,7 +1,7 @@
 import { UserProfile } from "@/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Sparkles, MessageCircle, Calendar } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 
 interface MatchModalProps {
   isOpen: boolean;
@@ -18,8 +18,8 @@ export const MatchModal = ({ isOpen, onClose, matchedProfile, onMessage }: Match
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center text-2xl font-bold flex items-center justify-center gap-2">
-            <Sparkles className="w-6 h-6 text-secondary" />
-            It's a Match!
+            <span className="text-3xl">👟</span>
+            Step in sync!
           </DialogTitle>
         </DialogHeader>
         
@@ -31,14 +31,14 @@ export const MatchModal = ({ isOpen, onClose, matchedProfile, onMessage }: Match
               className="w-32 h-32 rounded-full object-cover shadow-elevated ring-4 ring-primary/20"
             />
             <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center text-xl">
-              👋
+              🚶‍♂️
             </div>
           </div>
           
           <div className="text-center">
             <h3 className="text-xl font-semibold mb-1">{matchedProfile.name}</h3>
             <p className="text-muted-foreground">
-              You both want to walk together!
+              Ready to take some steps together!
             </p>
           </div>
           
@@ -48,7 +48,7 @@ export const MatchModal = ({ isOpen, onClose, matchedProfile, onMessage }: Match
               onClick={onClose}
               className="flex-1"
             >
-              Keep Swiping
+              Keep Walking
             </Button>
             <Button 
               onClick={onMessage}

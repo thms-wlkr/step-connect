@@ -47,7 +47,7 @@ In Xcode:
 2. Under "Signing & Capabilities":
    - Select your Team (you'll need an Apple Developer account - $99/year)
    - Bundle Identifier: `com.stepbuddy.app` (or change to your preference)
-3. Update Display Name to "StepBuddy"
+3. Update Display Name to "walkr"
 4. Set minimum iOS version to 13.0 or higher
 
 ### 5. Test on Simulator
@@ -76,7 +76,7 @@ In Xcode:
    - Click "My Apps" > "+" > "New App"
    - Fill in app details:
      - Platform: iOS
-     - Name: StepBuddy
+     - Name: walkr
      - Primary Language: English
      - Bundle ID: com.stepbuddy.app
      - SKU: stepbuddy-001

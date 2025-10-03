@@ -102,4 +102,19 @@ All colors MUST be HSL.
   .shadow-elevated {
     box-shadow: var(--shadow-elevated);
   }
+  
+  @keyframes fade-out {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.8);
+    }
+  }
+  
+  .animate-fade-out {
+    animation: fade-out 0.8s ease-out forwards;
+  }
 }

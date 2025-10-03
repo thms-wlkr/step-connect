@@ -2,7 +2,7 @@
 
 # Authorizer for Cognito
 resource "aws_api_gateway_authorizer" "cognito" {
-  name            = "${var.project_name}-cognito-authorizer"
+  name            = "${var.project_name}-authorizer"
   rest_api_id     = aws_api_gateway_rest_api.main.id
   type            = "COGNITO_USER_POOLS"
   provider_arns   = [aws_cognito_user_pool.main.arn]
@@ -124,7 +124,7 @@ resource "aws_api_gateway_deployment" "main" {
   }
 }
 
-resource "aws_api_gateway_stage" "main" {
+resource "aws_api_gateway_stage" "prod" {
   deployment_id = aws_api_gateway_deployment.main.id
   rest_api_id   = aws_api_gateway_rest_api.main.id
   stage_name    = var.environment
@@ -149,7 +149,7 @@ resource "aws_api_gateway_stage" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "api_gateway" {
-  name              = "/aws/apigateway/${var.project_name}-${var.environment}"
+  name              = "/aws/apigateway/${var.project_name}"
   retention_in_days = 14
 }
 
@@ -202,7 +202,7 @@ resource "aws_apigatewayv2_stage" "websocket" {
 }
 
 resource "aws_cloudwatch_log_group" "websocket_api" {
-  name              = "/aws/apigateway/websocket/${var.project_name}-${var.environment}"
+  name              = "/aws/apigateway/websocket/${var.project_name}"
   retention_in_days = 14
 }
 

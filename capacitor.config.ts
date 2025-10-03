@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.stepbuddy.app',
-  appName: 'StepBuddy',
+  appName: 'walkr',
   webDir: 'dist',
   server: {
     androidScheme: 'https'

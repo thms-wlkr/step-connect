@@ -3,7 +3,7 @@ export interface UserProfile {
   name: string;
   photoUrl?: string;
   age?: number;
-  location: string;
+  location: { lat: number; lng: number };
   stepGoal: number;
   pace: 'slow' | 'moderate' | 'brisk';
   availability: string[];

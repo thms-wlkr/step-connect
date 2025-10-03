@@ -51,7 +51,7 @@ export const ProfileView = ({ profile, onProfileUpdate }: ProfileViewProps) => {
             {currentProfile.age && <span>{currentProfile.age} years old</span>}
             <span>•</span>
             <MapPin className="w-4 h-4" />
-            <span>{currentProfile.location}</span>
+            <span>Location enabled</span>
           </div>
         </div>
 

@@ -19,7 +19,7 @@ const mockProfiles: UserProfile[] = [
     name: "Sarah",
     photoUrl: profile1,
     age: 32,
-    location: "Downtown",
+    location: { lat: 40.7580, lng: -73.9855 },
     stepGoal: 10000,
     pace: "moderate",
     availability: ["morning", "evening"],
@@ -31,7 +31,7 @@ const mockProfiles: UserProfile[] = [
     name: "Mike",
     photoUrl: profile2,
     age: 45,
-    location: "Riverside",
+    location: { lat: 40.7489, lng: -73.9680 },
     stepGoal: 8000,
     pace: "brisk",
     availability: ["afternoon", "evening"],
@@ -43,7 +43,7 @@ const mockProfiles: UserProfile[] = [
     name: "Emma",
     photoUrl: profile3,
     age: 28,
-    location: "Park District",
+    location: { lat: 40.7614, lng: -73.9776 },
     stepGoal: 12000,
     pace: "moderate",
     availability: ["morning"],
@@ -57,7 +57,7 @@ const currentUserProfile: UserProfile = {
   name: "You",
   photoUrl: profile1,
   age: 30,
-  location: "City Center",
+  location: { lat: 40.7128, lng: -74.0060 },
   stepGoal: 10000,
   pace: "moderate",
   availability: ["morning", "evening"],
@@ -141,8 +141,8 @@ const Index = () => {
                 className="w-full h-48 object-cover"
               />
               <div className="p-4">
-                <h3 className="font-semibold text-white">{profile.name}</h3>
-                <p className="text-sm text-gray-400">{profile.location}</p>
+                <h3 className="font-semibold">{profile.name}</h3>
+                <p className="text-sm text-muted-foreground">Nearby</p>
               </div>
             </div>
           ))}

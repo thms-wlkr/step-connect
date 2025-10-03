@@ -58,7 +58,7 @@ export const SwipeCard = ({ profile, style, onClick, onSwipeLeft, onSwipeRight }
           <h2 className="text-3xl font-bold text-white mb-1">{profile.name}, {profile.age}</h2>
           <div className="flex items-center gap-2 text-white/90 mb-2">
             <MapPin className="w-4 h-4" />
-            <span className="text-sm">{profile.location}</span>
+            <span className="text-sm">Nearby</span>
           </div>
           <div className="flex items-center gap-3 text-white/80 text-xs">
             <span>{profile.stepGoal.toLocaleString()} steps</span>

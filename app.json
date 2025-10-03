@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "StepBuddy",
+    "slug": "stepbuddy",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./public/favicon.ico",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./src/assets/hero-background.jpg",
+      "resizeMode": "cover",
+      "backgroundColor": "#4CAF50"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.stepbuddy.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "StepBuddy needs your location to find nearby walking partners.",
+        "NSLocationAlwaysUsageDescription": "StepBuddy needs your location to share it with your walking partners during walks."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./public/favicon.ico",
+        "backgroundColor": "#4CAF50"
+      },
+      "package": "com.stepbuddy.app",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./public/favicon.ico",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-location"
+    ]
+  }
+}
